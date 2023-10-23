@@ -63,3 +63,5 @@ WHU_TLS:
 ```
 
 
+# Build 
+colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release

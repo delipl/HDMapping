@@ -8,31 +8,31 @@ int main()
 	std::cout << "Hello" << std::endl;
 
 	std::vector<std::string> imu_files{
-		"E:/exp3/continousScanning_0032_sub/imu0000.csv",
-		"E:/exp3/continousScanning_0032_sub/imu0001.csv",
-		"E:/exp3/continousScanning_0032_sub/imu0002.csv",
-		"E:/exp3/continousScanning_0032_sub/imu0003.csv",
-		"E:/exp3/continousScanning_0032_sub/imu0004.csv",
-		"E:/exp3/continousScanning_0032_sub/imu0005.csv",
-		"E:/exp3/continousScanning_0032_sub/imu0006.csv",
-		"E:/exp3/continousScanning_0032_sub/imu0007.csv",
-		"E:/exp3/continousScanning_0032_sub/imu0008.csv",
-		"E:/exp3/continousScanning_0032_sub/imu0009.csv",
-		"E:/exp3/continousScanning_0032_sub/imu0010.csv",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/imu0000.csv",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/imu0001.csv",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/imu0002.csv",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/imu0003.csv",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/imu0004.csv",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/imu0005.csv",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/imu0006.csv",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/imu0007.csv",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/imu0008.csv",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/imu0009.csv",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/imu0010.csv",
 	};
 
 	std::vector<std::string> pc_files{
-		"E:/exp3/continousScanning_0032_sub/lidar0000.laz",
-		"E:/exp3/continousScanning_0032_sub/lidar0001.laz",
-		"E:/exp3/continousScanning_0032_sub/lidar0002.laz",
-		"E:/exp3/continousScanning_0032_sub/lidar0003.laz",
-		"E:/exp3/continousScanning_0032_sub/lidar0004.laz",
-		"E:/exp3/continousScanning_0032_sub/lidar0005.laz",
-		"E:/exp3/continousScanning_0032_sub/lidar0006.laz",
-		"E:/exp3/continousScanning_0032_sub/lidar0007.laz",
-		"E:/exp3/continousScanning_0032_sub/lidar0008.laz",
-		"E:/exp3/continousScanning_0032_sub/lidar0009.laz",
-		"E:/exp3/continousScanning_0032_sub/lidar0010.laz",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/lidar0000.laz",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/lidar0001.laz",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/lidar0002.laz",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/lidar0003.laz",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/lidar0004.laz",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/lidar0005.laz",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/lidar0006.laz",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/lidar0007.laz",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/lidar0008.laz",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/lidar0009.laz",
+		"/home/rabin/Documents/mandeye/continousScanning_0005/lidar0010.laz",
 	};
 
 	std::vector<std::tuple<double, FusionVector, FusionVector>> imu_data;
@@ -49,6 +49,6 @@ int main()
 	}
 
 	mandeye::SlamConfig config;
-	config.tempSave = "E:/exp3/test/";
+	config.tempSave = "/home/rabin/Documents/mandeye/test3";
 	mandeye::optimizeTrajectory(imu_data, pointcloud, config);
 }

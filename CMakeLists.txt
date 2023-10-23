@@ -1,40 +1,45 @@
-cmake_minimum_required(VERSION 3.1.0)
-project(terrestrial-laser-scanning-registration)
+cmake_minimum_required(VERSION 3.5)
+project(hdmapping_ros)
 set(CMAKE_CXX_STANDARD 20)
 
-if (WIN32)
-	add_compile_definitions(_USE_MATH_DEFINES)
-	include_directories(3rdparty/eigen)
-else()
-	find_package( Eigen3 REQUIRED)
-	if(EIGEN3_FOUND)
-		message("EIGEN3 found")
-		message ("EIGEN3_INCLUDE_DIR: " ${EIGEN3_INCLUDE_DIR})
-		message ("EIGEN3_INCLUDE_DIRS: " ${EIGEN3_INCLUDE_DIRS})
-		message ("Eigen3_DIR: " ${Eigen3_DIR})
-		include_directories(	
-			${EIGEN3_INCLUDE_DIR} 
-			${EIGEN3_INCLUDE_DIRS} 
-			${Eigen3_DIR})
-	endif()
-	
-	find_package(GLEW REQUIRED)
-	include_directories(${GLEW_INCLUDE_DIRS})
-	link_libraries(${GLEW_LIBRARIES})
 
-	find_package(OpenGL REQUIRED) 
-	find_package(GLUT REQUIRED) 
-	include_directories(library ${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS})
+# Ustalenie minimalnej wersji ROS 2
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(pcl_conversions REQUIRED)
+find_package(pcl_ros REQUIRED)
 
-	set(CMAKE_THREAD_LIBS_INIT "-lpthread")
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-	set(CMAKE_HAVE_THREADS_LIBRARY 1)
-	set(CMAKE_USE_WIN32_THREADS_INIT 0)
-	set(CMAKE_USE_PTHREADS_INIT 1)
-	set(THREADS_PREFER_PTHREAD_FLAG ON)
 
-	add_definitions("-DWITH_MANIF")
+find_package( Eigen3 REQUIRED)
+if(EIGEN3_FOUND)
+	message("EIGEN3 found")
+	message ("EIGEN3_INCLUDE_DIR: " ${EIGEN3_INCLUDE_DIR})
+	message ("EIGEN3_INCLUDE_DIRS: " ${EIGEN3_INCLUDE_DIRS})
+	message ("Eigen3_DIR: " ${Eigen3_DIR})
+	include_directories(	
+		${EIGEN3_INCLUDE_DIR} 
+		${EIGEN3_INCLUDE_DIRS} 
+		${Eigen3_DIR})
 endif()
+
+find_package(GLEW REQUIRED)
+include_directories(${GLEW_INCLUDE_DIRS})
+link_libraries(${GLEW_LIBRARIES})
+
+find_package(OpenGL REQUIRED) 
+find_package(GLUT REQUIRED) 
+include_directories(library ${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS})
+
+set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+set(CMAKE_HAVE_THREADS_LIBRARY 1)
+set(CMAKE_USE_WIN32_THREADS_INIT 0)
+set(CMAKE_USE_PTHREADS_INIT 1)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+
+add_definitions("-DWITH_MANIF")
+
 
 find_package(PCL)
 if(PCL_FOUND)
@@ -150,93 +155,33 @@ set(FUSION
 include_directories(3rdparty/freeglut-3.2.2/include/)
 add_subdirectory(3rdparty/freeglut-3.2.2)
 
-add_executable(multi_view_tls_registration_step_2 src/multi_view_tls_registration.cpp
-${IMGUI_SRCS}
-${CORE_SRCS}
-${GIZMO}
-)
-
-if (WIN32)
-target_link_libraries(multi_view_tls_registration_step_2 ${OPENGL_LIBRARIES} ../3rdparty/glew-2.2.0/lib/Release/x64/glew32 freeglut_static laszip3)	
-else()
-target_link_libraries(multi_view_tls_registration_step_2 ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} freeglut_static laszip)
-endif()
-if (PCL_FOUND)
-    target_link_libraries (multi_view_tls_registration_step_2 ${PCL_LIBRARIES})
-endif()
-if (GTSAM_FOUND)
-    target_link_libraries (multi_view_tls_registration_step_2 gtsam)
-endif()
-
-add_executable(hd_mapper src/hd_mapper.cpp
-${IMGUI_SRCS}
-${CORE_SRCS}
-${GIZMO}
-${CORE_HD_MAPPING_SRCS}
-)
-
-if (WIN32)
-target_link_libraries(hd_mapper ${OPENGL_LIBRARIES} ../3rdparty/glew-2.2.0/lib/Release/x64/glew32 freeglut_static laszip3)	
-else()
-target_link_libraries(hd_mapper ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} freeglut_static laszip)
-endif()
-if (PCL_FOUND)
-    target_link_libraries (hd_mapper ${PCL_LIBRARIES})
-endif()
-if (GTSAM_FOUND)
-    target_link_libraries (hd_mapper gtsam)
-endif()
-
-add_executable(matrix_mul src/matrix_mul.cpp)
 
 include_directories(
 3rdparty/Fusion/Fusion
 )
 
-add_executable(lidar_odometry_step_1 src/lidar_odometry.cpp
+
+
+add_executable(lidar_odometry_ros_test lib/lidarOdometryROSExample.cpp lib/lidarOdometry.cpp lib/lidarOdomIO.cpp
 ${IMGUI_SRCS}
 ${CORE_SRCS}
 ${GIZMO}
 ${FUSION}
 )
 
-add_executable(lidar_odometry_test lib/lidarOdometryExample.cpp lib/lidarOdometry.cpp lib/lidarOdomIO.cpp
-${IMGUI_SRCS}
-${CORE_SRCS}
-${GIZMO}
-${FUSION}
+target_link_libraries(lidar_odometry_ros_test ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} freeglut_static laszip tbb ${PCL_LIBRARIES})
+target_link_libraries(lidar_odometry_ros_test GLU GL glut)
+ament_target_dependencies(lidar_odometry_ros_test
+    rclcpp
+    sensor_msgs
+    pcl_conversions
+    pcl_ros
 )
 
-if (WIN32)
-target_link_libraries(lidar_odometry_step_1 ${OPENGL_LIBRARIES} ../3rdparty/glew-2.2.0/lib/Release/x64/glew32 freeglut_static laszip3)
-target_link_libraries(lidar_odometry_test ${OPENGL_LIBRARIES} ../3rdparty/glew-2.2.0/lib/Release/x64/glew32 freeglut_static laszip3)
-else()
-target_link_libraries(lidar_odometry_step_1 ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} freeglut_static laszip tbb)
-target_link_libraries(lidar_odometry_test ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} freeglut_static laszip tbb)
-
-endif()
-
-if (PCL_FOUND)
-    target_link_libraries (lidar_odometry_step_1 ${PCL_LIBRARIES})
-endif()
-
-add_executable(multi_session_registration_step_3 src/multi_session_registration.cpp
-${IMGUI_SRCS}
-${CORE_SRCS}
-${GIZMO}
+install(TARGETS
+	lidar_odometry_ros_test
+    DESTINATION lib/${PROJECT_NAME}
 )
 
-if (WIN32)
-target_link_libraries(multi_session_registration_step_3 ${OPENGL_LIBRARIES} ../3rdparty/glew-2.2.0/lib/Release/x64/glew32 freeglut_static laszip3)	
-else()
-target_link_libraries(multi_session_registration_step_3 ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} freeglut_static laszip)
-endif()
-if (PCL_FOUND)
-    target_link_libraries (multi_session_registration_step_3 ${PCL_LIBRARIES})
-endif()
-if (GTSAM_FOUND)
-    target_link_libraries (multi_session_registration_step_3 gtsam)
-endif()
-
-
+ament_package()
 
